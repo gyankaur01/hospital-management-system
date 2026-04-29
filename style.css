@@ -79,6 +79,7 @@ a {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .animate-fade-in-up {
@@ -643,6 +644,34 @@ tr:hover td {
 .card-header h3 {
   font-size: 1.3rem;
   color: var(--primary);
+  margin: 0;
+}
+
+.header-main-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.search-container {
+  position: relative;
+  flex: 1;
+  max-width: 320px;
+  min-width: 200px;
+}
+
+.search-container i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+}
+
+.search-container .form-control {
+  padding-left: 2.8rem;
 }
 
 /* Dashboard Grids */
@@ -1036,11 +1065,18 @@ tr:hover td {
   .card-header > div {
     width: 100%;
     flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header-main-info {
+    flex-direction: column;
     align-items: flex-start;
+    gap: 1rem;
   }
 
   .search-container {
     width: 100% !important;
+    max-width: 100% !important;
   }
 
   .btn {
