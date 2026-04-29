@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS | Doctor Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="uil uil-medkit"></i>
+                <h2>HMS Pro</h2>
+            </div>
+            <div class="sidebar-menu">
+                <a href="doctor_dashboard.html" class="menu-item active">
+                    <i class="uil uil-estate"></i> Dashboard
+                </a>
+                <a href="patients.html" class="menu-item">
+                    <i class="uil uil-users-alt"></i> Patients
+                </a>
+                <a href="appointments.html" class="menu-item">
+                    <i class="uil uil-calendar-alt"></i> Appointments
+                </a>
+                <a href="billing.html" class="menu-item">
+                    <i class="uil uil-invoice"></i> Billing
+                </a>
+            </div>
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn" class="menu-item" style="color: var(--danger);">
+                    <i class="uil uil-signout"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                    <button id="sidebar-toggle" class="btn-outline">
+                        <i class="uil uil-bars"></i>
+                    </button>
+                    <h1 class="page-title">Doctor Overview</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-details" style="text-align: right;">
+                        <div id="current-user-name" style="font-weight: 600; font-size: 0.95rem;">Loading...</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Manage System</div>
+                    </div>
+                    <div class="user-avatar">
+                        <i class="uil uil-user-md"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper animate-fade-in">
+                <!-- Stats Grid -->
+                <div class="stats-grid" id="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="uil uil-users-alt"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="doc-stat-patients">0</h3>
+                            <p>My Patients</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="uil uil-calendar-alt"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="doc-stat-appointments">0</h3>
+                            <p>My Appointments</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-card">
+                    <div class="card-header">
+                        <h3>My Upcoming Appointments</h3>
+                        <a href="appointments.html" class="btn btn-outline" style="padding: 0.4rem 1rem; font-size: 0.85rem;">View All</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Patient Name</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="doc-recent-appointments">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Treatment/Prescription Modal -->
+    <div class="modal-overlay" id="treatment-modal">
+        <div class="modal-content max-w-650">
+            <div class="modal-header">
+                <h3 id="treatment-modal-title">Patient Treatment & Prescription</h3>
+                <button class="close-btn" onclick="HMS.closeModal('treatment-modal')">&times;</button>
+            </div>
+            <form id="treatment-form">
+                <input type="hidden" id="treatment-app-id">
+                <div class="form-group">
+                    <label>Patient: <span id="treatment-patient-name" class="text-primary"></span></label>
+                </div>
+                
+                <div class="form-group">
+                    <label for="treatment-notes">Diagnosis & Clinical Notes</label>
+                    <textarea id="treatment-notes" class="form-control" rows="4" placeholder="Enter findings, diagnosis, and advice..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="flex-between">
+                        Prescription (Medications)
+                        <button type="button" class="btn btn-outline p-10 fs-small" onclick="addPrescriptionRow()">
+                            <i class="uil uil-plus"></i> Add Medicine
+                        </button>
+                    </label>
+                    <div id="prescription-list" class="mt-20">
+                        <!-- Rows added here -->
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" onclick="HMS.closeModal('treatment-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Complete Consultation & Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        const addPrescriptionRow = (med = '', dose = '', freq = '') => {
+            const container = document.getElementById('prescription-list');
+            const row = document.createElement('div');
+            row.className = 'prescription-row mb-10';
+            row.innerHTML = `
+                <input type="text" class="form-control pres-med" placeholder="Medicine" value="${med}" required>
+                <input type="text" class="form-control pres-dose" placeholder="Dosage (e.g. 1 cap)" value="${dose}" required>
+                <input type="text" class="form-control pres-freq" placeholder="Freq (e.g. 1-0-1)" value="${freq}" required>
+                <button type="button" class="btn btn-outline p-0" onclick="this.parentElement.remove()">
+                    <i class="uil uil-trash-alt text-danger"></i>
+                </button>
+            `;
+            container.appendChild(row);
+        };
+
+        const openTreatmentModal = (appId) => {
+            const apps = HMS.getData('appointments');
+            const app = apps.find(a => a.id === appId);
+            if (!app) return;
+
+            document.getElementById('treatment-app-id').value = appId;
+            document.getElementById('treatment-patient-name').textContent = app.patientName;
+            document.getElementById('treatment-notes').value = app.notes || '';
+            
+            const container = document.getElementById('prescription-list');
+            container.innerHTML = '';
+            if (app.prescription && app.prescription.length > 0) {
+                app.prescription.forEach(p => addPrescriptionRow(p.medicine, p.dosage, p.frequency));
+            } else {
+                addPrescriptionRow();
+            }
+            
+            HMS.openModal('treatment-modal');
+        };
+
+        document.getElementById('treatment-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const appId = parseInt(document.getElementById('treatment-app-id').value);
+            const notes = document.getElementById('treatment-notes').value;
+            
+            const prescription = [];
+            document.querySelectorAll('#prescription-list .prescription-row').forEach(row => {
+                prescription.push({
+                    medicine: row.querySelector('.pres-med').value,
+                    dosage: row.querySelector('.pres-dose').value,
+                    frequency: row.querySelector('.pres-freq').value
+                });
+            });
+
+            const apps = HMS.getData('appointments');
+            const index = apps.findIndex(a => a.id === appId);
+            if (index > -1) {
+                apps[index].notes = notes;
+                apps[index].prescription = prescription;
+                apps[index].status = 'Completed';
+                HMS.setData('appointments', apps);
+                HMS.showToast('Consultation completed successfully!', 'success');
+                HMS.closeModal('treatment-modal');
+                location.reload(); // Refresh to update list
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.HMS) {
+                const user = JSON.parse(localStorage.getItem('hms_user'));
+                if(!user || user.role !== 'Doctor') return;
+                
+                // Find doctor name from the doctor set based on the username
+                const doctorProfile = HMS.getData('doctors').find(d => d.name.toLowerCase().includes(user.username) || d.spec.toLowerCase().includes(user.username)); 
+                // Hardcoded fallback for the 'doctor' seed user
+                const doctorName = user.username === 'doctor' ? 'Dr. Rahul Sharma' : user.username;
+
+                const appointments = HMS.getData('appointments').filter(a => a.doctor === doctorName);
+                const patientIds = new Set(appointments.map(a => a.patientId));
+                
+                document.getElementById('doc-stat-appointments').textContent = appointments.length;
+                document.getElementById('doc-stat-patients').textContent = patientIds.size;
+
+                const tbody = document.getElementById('doc-recent-appointments');
+                
+                if (appointments.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">No appointments found</td></tr>';
+                } else {
+                    appointments.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(app => {
+                        const tr = document.createElement('tr');
+                        const statusClass = app.status.toLowerCase();
+                        const actionBtn = (app.status === 'Active' || app.status === 'Pending') ? 
+                            `<button class="btn btn-primary" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;" onclick="openTreatmentModal(${app.id})">Treat Patient</button>` : 
+                            `<span style="color: var(--text-secondary); font-size: 0.8rem;">Checked</span>`;
+
+                        tr.innerHTML = `
+                            <td><strong>${app.patientName}</strong></td>
+                            <td>${HMS.formatDate(app.date)}</td>
+                            <td>${app.time}</td>
+                            <td><span class="badge ${statusClass}">${app.status}</span></td>
+                            <td>${actionBtn}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

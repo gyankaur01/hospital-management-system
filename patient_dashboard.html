@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS | Patient Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="uil uil-medkit"></i>
+                <h2>HMS Pro</h2>
+            </div>
+            <div class="sidebar-menu">
+                <a href="patient_dashboard.html" class="menu-item active">
+                    <i class="uil uil-estate"></i> Dashboard
+                </a>
+            </div>
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn" class="menu-item" style="color: var(--danger);">
+                    <i class="uil uil-signout"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                    <button id="sidebar-toggle" class="btn-outline">
+                        <i class="uil uil-bars"></i>
+                    </button>
+                    <h1 class="page-title">Patient Portal</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-details" style="text-align: right;">
+                        <div id="current-user-name" style="font-weight: 600; font-size: 0.95rem;">Loading...</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Patient Account</div>
+                    </div>
+                    <div class="user-avatar" style="background: var(--success);">
+                        <i class="uil uil-user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper animate-fade-in">
+                <!-- Stats Grid -->
+                <div class="stats-grid" id="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="uil uil-calendar-alt"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="pat-stat-appointments">0</h3>
+                            <p>Upcoming Appointments</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon danger">
+                            <i class="uil uil-invoice"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="pat-stat-bills">0</h3>
+                            <p>Unpaid Bills</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row" style="margin-bottom: 2rem;">
+                    <!-- Appointments -->
+                    <div class="data-card" style="margin-bottom: 0;">
+                        <div class="card-header">
+                            <h3>Upcoming Appointments</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Doctor</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pat-appointments-tbody">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Bills -->
+                    <div class="data-card" style="margin-bottom: 0;">
+                        <div class="card-header">
+                            <h3>My Invoices</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pat-bills-tbody">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medical History Section -->
+                <div class="data-card">
+                    <div class="card-header">
+                        <h3>My Clinical History & Prescriptions</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Consultation Date</th>
+                                    <th>Doctor</th>
+                                    <th>Diagnosis Summary</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pat-history-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Treatment Details Modal -->
+    <div class="modal-overlay" id="history-modal">
+        <div class="modal-content max-w-600">
+            <div class="modal-header">
+                <h3>Treatment Details</h3>
+                <button class="close-btn" onclick="HMS.closeModal('history-modal')">&times;</button>
+            </div>
+            <div id="history-content">
+                <div class="p-10 bg-back br-12 mb-20">
+                    <h5 class="text-secondary mb-10 upper fs-small">Diagnosis & Notes</h5>
+                    <p id="hist-notes" class="fw-500"></p>
+                </div>
+                <div>
+                    <h5 class="text-secondary mb-10 upper fs-small">Prescribed Medications</h5>
+                    <div id="hist-prescription-list">
+                        <!-- Medications list here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        const viewHistoryDetails = (appId) => {
+            const apps = HMS.getData('appointments');
+            const app = apps.find(a => a.id === appId);
+            if (!app) return;
+
+            document.getElementById('hist-notes').textContent = app.notes || 'No notes provided.';
+            const plist = document.getElementById('hist-prescription-list');
+            plist.innerHTML = '';
+
+            if (app.prescription && app.prescription.length > 0) {
+                app.prescription.forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'p-10 flex-between';
+                    div.style.borderBottom = '1px solid var(--border)';
+                    div.innerHTML = `
+                        <div>
+                            <div class="fw-700">${p.medicine}</div>
+                            <div class="fs-small text-secondary">${p.dosage}</div>
+                        </div>
+                        <div class="fw-600 text-primary">${p.frequency}</div>
+                    `;
+                    plist.appendChild(div);
+                });
+            } else {
+                plist.innerHTML = '<p style="color: var(--text-secondary);">No medications prescribed.</p>';
+            }
+
+            HMS.openModal('history-modal');
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.HMS) {
+                const user = JSON.parse(localStorage.getItem('hms_user'));
+                if(!user || user.role !== 'Patient') return;
+                
+                const patients = HMS.getData('patients');
+                const pRecord = patients.find(p => p.contact === user.username);
+                
+                if (pRecord) {
+                    const allApps = HMS.getData('appointments').filter(a => a.patientId === pRecord.id);
+                    const bills = HMS.getData('bills').filter(b => b.patientId === pRecord.id);
+                    
+                    const upcomingApps = allApps.filter(a => a.status !== 'Completed' && a.status !== 'Cancelled');
+                    const completedApps = allApps.filter(a => a.status === 'Completed');
+
+                    document.getElementById('pat-stat-appointments').textContent = upcomingApps.length;
+                    document.getElementById('pat-stat-bills').textContent = bills.filter(b => b.status === 'Unpaid').length;
+                    
+                    // Render Upcoming Appointments
+                    const atbody = document.getElementById('pat-appointments-tbody');
+                    if (upcomingApps.length === 0) {
+                        atbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">No upcoming appointments</td></tr>';
+                    } else {
+                        upcomingApps.forEach(app => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td><strong>${app.doctor}</strong></td>
+                                <td>${HMS.formatDate(app.date)}</td>
+                                <td>${app.time}</td>
+                                <td><span class="badge ${app.status.toLowerCase()}">${app.status}</span></td>
+                            `;
+                            atbody.appendChild(tr);
+                        });
+                    }
+
+                    // Render Medical History
+                    const htbody = document.getElementById('pat-history-tbody');
+                    if (completedApps.length === 0) {
+                        htbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">No completed consultations found</td></tr>';
+                    } else {
+                        completedApps.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(app => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${HMS.formatDate(app.date)}</td>
+                                <td><strong>${app.doctor}</strong></td>
+                                <td style="color: var(--text-secondary); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${app.notes || 'N/A'}</td>
+                                <td><button class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;" onclick="viewHistoryDetails(${app.id})">View Rx & Notes</button></td>
+                            `;
+                            htbody.appendChild(tr);
+                        });
+                    }
+
+                    // Render Bills
+                    const btbody = document.getElementById('pat-bills-tbody');
+                    if (bills.length === 0) {
+                        btbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-secondary);">No invoices found</td></tr>';
+                    } else {
+                        bills.forEach(b => {
+                            const badgeClass = b.status === 'Paid' ? 'success' : 'danger';
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${HMS.formatDate(b.date)}</td>
+                                <td>₹${b.amount.toFixed(2)}</td>
+                                <td><span class="badge ${badgeClass}">${b.status}</span></td>
+                            `;
+                            btbody.appendChild(tr);
+                        });
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

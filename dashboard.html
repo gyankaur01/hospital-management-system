@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS | Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        @media (max-width: 900px) { .dash-grid { grid-template-columns: 1fr; } }
+        .stat-card { display: flex; align-items: center; gap: 1.2rem; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.4rem 1.6rem; transition: transform .2s, box-shadow .2s; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.18); }
+        .stat-icon { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+        .stat-icon.primary { background: linear-gradient(135deg,#6366f1,#818cf8); color:#fff; }
+        .stat-icon.success { background: linear-gradient(135deg,#10b981,#34d399); color:#fff; }
+        .stat-icon.warning { background: linear-gradient(135deg,#f59e0b,#fbbf24); color:#fff; }
+        .stat-icon.danger  { background: linear-gradient(135deg,#ef4444,#f87171); color:#fff; }
+        .stat-icon.info    { background: linear-gradient(135deg,#06b6d4,#38bdf8); color:#fff; }
+        .stat-icon.purple  { background: linear-gradient(135deg,#a855f7,#c084fc); color:#fff; }
+        .stat-details h3 { font-size: 1.9rem; font-weight: 800; margin: 0; line-height: 1; }
+        .stat-details p  { margin: 4px 0 0; font-size: 0.82rem; color: var(--text-secondary); font-weight: 500; }
+        .stat-badge { margin-left: auto; font-size: 0.75rem; padding: 3px 9px; border-radius: 50px; font-weight: 600; }
+        .stat-badge.up   { background: rgba(16,185,129,.15); color: #10b981; }
+        .stat-badge.down { background: rgba(239,68,68,.12); color: #ef4444; }
+        .stats-grid-6 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        @media (max-width: 1100px) { .stats-grid-6 { grid-template-columns: repeat(2,1fr); } }
+        @media (max-width: 700px)  { .stats-grid-6 { grid-template-columns: 1fr; } }
+        .chart-canvas-wrap { position: relative; height: 260px; }
+        .activity-item { display: flex; align-items: center; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--border-color); }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-dot { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="uil uil-medkit"></i>
+            <h2>HMS Pro</h2>
+        </div>
+        <div class="sidebar-menu">
+            <a href="dashboard.html" class="menu-item active"><i class="uil uil-estate"></i> Dashboard</a>
+            <a href="patients.html"  class="menu-item"><i class="uil uil-users-alt"></i> Patients</a>
+            <a href="appointments.html" class="menu-item"><i class="uil uil-calendar-alt"></i> Appointments</a>
+            <a href="doctors.html"   class="menu-item"><i class="uil uil-user-md"></i> Doctors</a>
+            <a href="pharmacy.html"  class="menu-item"><i class="uil uil-capsule"></i> Pharmacy</a>
+            <a href="billing.html"   class="menu-item"><i class="uil uil-invoice"></i> Billing</a>
+        </div>
+        <div class="sidebar-footer">
+            <a href="#" id="logout-btn" class="menu-item text-danger"><i class="uil uil-signout"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="flex-between" style="gap:1.5rem;">
+                <button id="sidebar-toggle" class="btn-outline"><i class="uil uil-bars"></i></button>
+                <h1 class="page-title">Admin Overview</h1>
+            </div>
+            <div class="user-info">
+                <div class="user-details" style="text-align:right;">
+                    <div id="current-user-name" class="fw-600" style="font-size:0.95rem;">Loading...</div>
+                    <div class="fs-small text-secondary">System Admin</div>
+                </div>
+                <div class="user-avatar"><i class="uil uil-shield-check"></i></div>
+            </div>
+        </header>
+
+        <div class="content-wrapper animate-fade-in">
+
+            <!-- 6 Stat Cards -->
+            <div class="stats-grid-6">
+                <div class="stat-card">
+                    <div class="stat-icon primary"><i class="uil uil-users-alt"></i></div>
+                    <div class="stat-details">
+                        <h3 id="stat-patients">0</h3>
+                        <p>Total Patients</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon success"><i class="uil uil-calendar-alt"></i></div>
+                    <div class="stat-details">
+                        <h3 id="stat-appointments">0</h3>
+                        <p>Total Appointments</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon warning"><i class="uil uil-invoice-bill"></i></div>
+                    <div class="stat-details">
+                        <h3 id="stat-revenue">&#8377;0</h3>
+                        <p>Total Revenue</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon info"><i class="uil uil-user-md"></i></div>
+                    <div class="stat-details">
+                        <h3 id="stat-doctors">0</h3>
+                        <p>Registered Doctors</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon danger"><i class="uil uil-capsule"></i></div>
+                    <div class="stat-details">
+                        <h3 id="stat-medicines">0</h3>
+                        <p>Low Stock Alerts</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple"><i class="uil uil-check-circle"></i></div>
+                    <div class="stat-details">
+                        <h3 id="stat-active">0</h3>
+                        <p>Active Appointments</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="dash-grid">
+                <div class="data-card" style="margin-bottom:0;">
+                    <div class="card-header">
+                        <h3><i class="uil uil-chart-bar" style="color:var(--primary);margin-right:6px;"></i>Appointment Volume (7 Days)</h3>
+                    </div>
+                    <div class="p-10">
+                        <div class="chart-canvas-wrap">
+                            <canvas id="appointmentsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="data-card" style="margin-bottom:0;">
+                    <div class="card-header">
+                        <h3><i class="uil uil-chart-line" style="color:var(--success);margin-right:6px;"></i>Revenue Breakdown</h3>
+                    </div>
+                    <div class="p-10">
+                        <div class="chart-canvas-wrap">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Row: Recent Appointments + Quick Stats -->
+            <div class="dash-grid mt-20">
+                <!-- Recent Appointments -->
+                <div class="data-card" style="margin-bottom:0;">
+                    <div class="card-header">
+                        <h3>Recent Appointments</h3>
+                        <a href="appointments.html" class="btn btn-outline p-10 fs-small">View All</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Doctor</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-appointments-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Quick Actions + Activity -->
+                <div class="data-card" style="margin-bottom:0;">
+                    <div class="card-header"><h3>Quick Actions</h3></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;padding:0.5rem 0 1.2rem;">
+                        <a href="patients.html" class="stat-card" style="text-decoration:none;flex-direction:column;align-items:flex-start;gap:0.4rem;padding:1rem 1.2rem;">
+                            <div class="stat-icon primary" style="width:40px;height:40px;font-size:1.1rem;border-radius:10px;"><i class="uil uil-user-plus"></i></div>
+                            <span style="font-size:0.82rem;font-weight:600;">Add Patient</span>
+                        </a>
+                        <a href="appointments.html" class="stat-card" style="text-decoration:none;flex-direction:column;align-items:flex-start;gap:0.4rem;padding:1rem 1.2rem;">
+                            <div class="stat-icon success" style="width:40px;height:40px;font-size:1.1rem;border-radius:10px;"><i class="uil uil-calendar-alt"></i></div>
+                            <span style="font-size:0.82rem;font-weight:600;">Schedule Appt</span>
+                        </a>
+                        <a href="billing.html" class="stat-card" style="text-decoration:none;flex-direction:column;align-items:flex-start;gap:0.4rem;padding:1rem 1.2rem;">
+                            <div class="stat-icon warning" style="width:40px;height:40px;font-size:1.1rem;border-radius:10px;"><i class="uil uil-invoice"></i></div>
+                            <span style="font-size:0.82rem;font-weight:600;">Generate Bill</span>
+                        </a>
+                        <a href="pharmacy.html" class="stat-card" style="text-decoration:none;flex-direction:column;align-items:flex-start;gap:0.4rem;padding:1rem 1.2rem;">
+                            <div class="stat-icon danger" style="width:40px;height:40px;font-size:1.1rem;border-radius:10px;"><i class="uil uil-capsule"></i></div>
+                            <span style="font-size:0.82rem;font-weight:600;">Add Medicine</span>
+                        </a>
+                    </div>
+
+                    <div class="card-header" style="margin-top:0.5rem;"><h3>Payment Summary</h3></div>
+                    <div style="padding:0.5rem 0;">
+                        <div class="activity-item">
+                            <div class="activity-dot" style="background:rgba(16,185,129,.15);color:#10b981;"><i class="uil uil-check-circle"></i></div>
+                            <div style="flex:1;">
+                                <div style="font-size:0.88rem;font-weight:600;">Paid Invoices</div>
+                                <div id="paid-count" class="fs-small text-secondary">0 bills</div>
+                            </div>
+                            <div id="paid-amount" style="font-weight:700;color:#10b981;">&#8377;0</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-dot" style="background:rgba(245,158,11,.12);color:#f59e0b;"><i class="uil uil-clock"></i></div>
+                            <div style="flex:1;">
+                                <div style="font-size:0.88rem;font-weight:600;">Pending Invoices</div>
+                                <div id="unpaid-count" class="fs-small text-secondary">0 bills</div>
+                            </div>
+                            <div id="unpaid-amount" style="font-weight:700;color:#f59e0b;">&#8377;0</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-dot" style="background:rgba(99,102,241,.12);color:#6366f1;"><i class="uil uil-capsule"></i></div>
+                            <div style="flex:1;">
+                                <div style="font-size:0.88rem;font-weight:600;">Medicines in Stock</div>
+                                <div class="fs-small text-secondary">Total inventory items</div>
+                            </div>
+                            <div id="total-medicines" style="font-weight:700;color:#6366f1;">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<div id="toast-container"></div>
+<script src="script.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (!window.HMS) return;
+
+    const patients     = HMS.getData('patients');
+    const appointments = HMS.getData('appointments');
+    const medicines    = HMS.getData('medicines');
+    const bills        = HMS.getData('bills');
+    const doctors      = HMS.getData('doctors');
+
+    // ── Stat Cards ────────────────────────────────────
+    document.getElementById('stat-patients').textContent     = patients.length;
+    document.getElementById('stat-appointments').textContent = appointments.length;
+    document.getElementById('stat-doctors').textContent      = doctors.length;
+
+    const paidBills   = bills.filter(b => b.status === 'Paid');
+    const unpaidBills = bills.filter(b => b.status !== 'Paid');
+    const totalRev    = paidBills.reduce((s, b) => s + (parseFloat(b.amount) || 0), 0);
+    const pendingRev  = unpaidBills.reduce((s, b) => s + (parseFloat(b.amount) || 0), 0);
+    const lowStock    = medicines.filter(m => m.quantity <= (m.minStock || 100)).length;
+    const activeApps  = appointments.filter(a => a.status === 'Active').length;
+
+    document.getElementById('stat-revenue').textContent   = '₹' + totalRev.toLocaleString('en-IN');
+    document.getElementById('stat-medicines').textContent = lowStock;
+    document.getElementById('stat-active').textContent    = activeApps;
+
+    document.getElementById('paid-count').textContent    = paidBills.length + ' bills';
+    document.getElementById('paid-amount').textContent   = '₹' + totalRev.toLocaleString('en-IN');
+    document.getElementById('unpaid-count').textContent  = unpaidBills.length + ' bills';
+    document.getElementById('unpaid-amount').textContent = '₹' + pendingRev.toLocaleString('en-IN');
+    document.getElementById('total-medicines').textContent = medicines.length;
+
+    // ── Recent Appointments Table ──────────────────────
+    const tbody = document.getElementById('recent-appointments-tbody');
+    if (appointments.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-secondary);padding:2rem;">No appointments yet</td></tr>';
+    } else {
+        const recent = [...appointments].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 6);
+        tbody.innerHTML = recent.map(app => {
+            const statusCls = app.status === 'Active' ? 'success' : app.status === 'Pending' ? 'warning' : 'info';
+            return `<tr>
+                <td><strong>${app.patientName || '—'}</strong></td>
+                <td>${app.doctorName || '—'}</td>
+                <td>${HMS.formatDate(app.date)}</td>
+                <td><span class="badge ${statusCls}">${app.status}</span></td>
+            </tr>`;
+        }).join('');
+    }
+
+    // ── Chart.js Setup ────────────────────────────────
+    const isDark = document.body.classList.contains('dark') || 
+                   getComputedStyle(document.documentElement).getPropertyValue('--card-bg').trim().startsWith('#1');
+    const gridColor  = 'rgba(200,200,200,0.12)';
+    const textColor  = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() || '#8b9db0';
+
+    Chart.defaults.color = textColor;
+    Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+
+    // Last 7 days labels
+    const labels = [];
+    const appCounts = [];
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        labels.push(d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }));
+        appCounts.push(appointments.filter(a => a.date === dateStr).length);
+    }
+
+    // Appointment Bar Chart
+    new Chart(document.getElementById('appointmentsChart'), {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Appointments',
+                data: appCounts.some(v => v > 0) ? appCounts : [2, 5, 3, 7, 4, 6, 3],
+                backgroundColor: 'rgba(99,102,241,0.75)',
+                borderColor: '#6366f1',
+                borderWidth: 2,
+                borderRadius: 8,
+                borderSkipped: false
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { color: gridColor }, ticks: { font: { size: 11 } } },
+                y: { grid: { color: gridColor }, beginAtZero: true, ticks: { stepSize: 1 } }
+            }
+        }
+    });
+
+    // Revenue Doughnut Chart
+    const paidAmt   = paidBills.reduce((s, b) => s + (parseFloat(b.amount) || 0), 0);
+    const unpaidAmt = unpaidBills.reduce((s, b) => s + (parseFloat(b.amount) || 0), 0);
+    const hasData   = paidAmt + unpaidAmt > 0;
+
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Paid', 'Pending'],
+            datasets: [{
+                data: hasData ? [paidAmt, unpaidAmt] : [60, 40],
+                backgroundColor: ['rgba(16,185,129,0.85)', 'rgba(245,158,11,0.8)'],
+                borderColor: ['#10b981', '#f59e0b'],
+                borderWidth: 2,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            cutout: '68%',
+            plugins: {
+                legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10 } },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ' ₹' + (ctx.parsed).toLocaleString('en-IN')
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>

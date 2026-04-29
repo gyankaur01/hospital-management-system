@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="blob blob-primary" style="width: 30vw; height: 30vw; top: -10%; left: -10%;"></div>
+        <div class="blob blob-success" style="width: 40vw; height: 40vw; bottom: -10%; right: -10%;"></div>
+        <div class="auth-card animate-fade-in">
+            <div class="auth-header">
+                <h1>Hospital Management</h1>
+                <p>Sign in to your account</p>
+            </div>
+            <form id="login-form">
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter username" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Sign In</button>
+            </form>
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #f1f5f9; font-size: 0.85rem; color: var(--text-secondary);">
+                <p style="margin-bottom: 0.8rem; font-weight: 700; color: var(--text-primary);">Demo Portal Credentials:</p>
+                <div style="display: grid; gap: 0.5rem;">
+                    <p>Admin: <code style="background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px; color: var(--primary);">admin / 123</code></p>
+                    <p>Doctor: <code style="background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px; color: var(--primary);">doctor / 123</code></p>
+                    <p>Patient: <code style="background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px; color: var(--primary);">9876543210 / password</code></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (window.HMS) {
+                const success = window.HMS.login(null, username, password);
+                if (!success) {
+                    alert('Invalid credentials. Please try again.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

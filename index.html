@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="HMS Pro - Premium Indian Healthcare Management System. Book appointments with top specialists online.">
+    <title>HMS Pro | Premium Indian Healthcare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+
+<body style="display: block;">
+    <!-- Navigation -->
+    <nav class="sticky-nav" id="main-nav">
+        <div class="container flex-between">
+            <a href="#" class="hero-logo">
+                <i class="uil uil-medkit"></i> HMS Pro
+            </a>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#about" class="nav-link">Our Doctors</a>
+                <a href="#contact" class="nav-link">Locations</a>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <a href="login.html" class="nav-link" style="padding: 0.6rem 1rem;">Admin / Staff</a>
+                    <a href="login.html" class="btn btn-primary" id="portal-access-btn">
+                        Portal Access
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-image-overlay"
+            style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(0, 71, 171, 0.85)), url('assets/hero-bg.png') center/cover;">
+        </div>
+
+        <div class="hero-content animate-fade-in-up">
+            <div class="hero-tag">A New Standard in Patient Care</div>
+            <h1>Healthcare <span>Reimagined</span><br>for the Modern Era</h1>
+            <p
+                style="color: rgba(255, 255, 255, 0.75); font-size: 1.35rem; max-width: 750px; margin-bottom: 3.5rem; line-height: 1.6; font-weight: 500;">
+                Seamlessly connect with top Indian specialists. Manage appointments, digital records,
+                and automated billing through our secure clinical portal.
+            </p>
+            <div class="hero-actions">
+                <button class="btn btn-primary" id="instant-booking-btn"
+                    style="padding: 1.25rem 3rem; font-size: 1.15rem; background: var(--success);"
+                    onclick="HMS.openModal('booking-modal')">
+                    <i class="uil uil-plus-circle"></i> Instant Online Booking
+                </button>
+                <a href="#features" class="btn btn-outline"
+                    style="color: white; border-color: rgba(255, 255, 255, 0.4); padding: 1.25rem 3rem;">
+                    Explore Services
+                </a>
+            </div>
+
+            <!-- Hero Stats Row -->
+            <div
+                style="display: flex; gap: 5rem; margin-top: 6rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 4rem;">
+                <div class="stat-item">
+                    <h3 style="color: white; font-size: 2.5rem; font-weight: 800; letter-spacing: -2px;">50,000+</h3>
+                    <p style="color: #60A5FA; font-size: 0.85rem; font-weight: 800; letter-spacing: 2px;">HAPPY PATIENTS
+                    </p>
+                </div>
+                <div class="stat-item">
+                    <h3 style="color: white; font-size: 2.5rem; font-weight: 800; letter-spacing: -2px;">500+</h3>
+                    <p style="color: #60A5FA; font-size: 0.85rem; font-weight: 800; letter-spacing: 2px;">SPECIALIST
+                        DOCTORS</p>
+                </div>
+                <div class="stat-item">
+                    <h3 style="color: white; font-size: 2.5rem; font-weight: 800; letter-spacing: -2px;">99.9%</h3>
+                    <p style="color: #60A5FA; font-size: 0.85rem; font-weight: 800; letter-spacing: 2px;">SERVICE UPTIME
+                    </p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div style="text-align: center; max-width: 900px; margin: 0 auto 5rem;" class="animate-fade-in-up">
+            <h2
+                style="font-size: 3.5rem; font-weight: 900; letter-spacing: -3px; margin-bottom: 1.5rem; line-height: 1;">
+                One Platform, Total <span>Clinical</span> Control</h2>
+            <p style="color: var(--text-secondary); font-size: 1.25rem; line-height: 1.6; font-weight: 500;">
+                Our integrated HMS Pro ecosystem synchronizes clinical operations, inventory, and finance for the modern
+                world.
+            </p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="icon-box" style="color: var(--primary); background: rgba(0, 71, 171, 0.15);">
+                    <i class="uil uil-medkit"></i>
+                </div>
+                <h3 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-primary);">Expert
+                    Consultations</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8; font-weight: 500;">Connect with India's most
+                    trusted practitioners through an AI-optimized scheduling system that protects your time.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon-box" style="color: var(--success); background: rgba(0, 163, 108, 0.15);">
+                    <i class="uil uil-flask"></i>
+                </div>
+                <h3 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-primary);">
+                    Digital Pharmacies</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8; font-weight: 500;">Real-time inventory mapping
+                    with sub-second stock updates, expiry alerts, and automated procurement workflows.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon-box" style="color: var(--warning); background: rgba(245, 158, 11, 0.15);">
+                    <i class="uil uil-bill"></i>
+                </div>
+                <h3 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-primary);">
+                    Intelligent Billing</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8; font-weight: 500;">Automated INR invoicing
+                    with digital record persistence and secure finance auditing for total institutional transparency.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Modal Popup -->
+    <div class="modal-overlay" id="booking-modal">
+        <div class="modal-content booking-modal-content">
+            <div class="modal-header-premium">
+                <h3>Find Your Slot</h3>
+                <p>Instant confirmation for your medical visit.</p>
+                <button class="close-btn" onclick="HMS.closeModal('booking-modal')">&times;</button>
+            </div>
+            <div class="modal-body-premium">
+                <form id="public-booking-form" class="booking-form">
+                    <div class="form-group">
+                        <label for="book-name">Patient Full Name</label>
+                        <input type="text" id="book-name" class="form-control" placeholder="E.g. Sumit Patel" required>
+                    </div>
+                    <div class="form-row booking-form-row">
+                        <div class="form-group">
+                            <label for="book-age">Age</label>
+                            <input type="number" id="book-age" class="form-control" placeholder="25" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="book-gender">Gender</label>
+                            <select id="book-gender" class="form-control" required>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-contact">Mobile Number (Login Credential)</label>
+                        <input type="tel" id="book-contact" class="form-control" placeholder="9876543210" required
+                            pattern="[0-9]{10}">
+                    </div>
+                    <div class="form-group">
+                        <label for="book-doctor">Specialist Doctor</label>
+                        <select id="book-doctor" class="form-control" required title="Choose a doctor">
+                            <option value="" disabled selected>Loading Surgeons & Physicians...</option>
+                        </select>
+                    </div>
+                    <div class="form-row booking-form-row" style="margin-top: 1rem;">
+                        <div class="form-group">
+                            <label for="book-date">Preferred Date</label>
+                            <input type="date" id="book-date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="book-time">Select Time Slot</label>
+                            <input type="time" id="book-time" class="form-control" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary booking-submit-btn" id="submit-booking-btn">
+                        <i class="uil uil-check-circle"></i> Secure Patient Slot
+                    </button>
+                    <p
+                        style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">
+                        Wait times are currently: <span style="color: var(--success);">~15 minutes</span>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Main Footer -->
+    <footer
+        style="background: #0f172a; padding: 6rem 6% 3rem; color: white; border-top: 1px solid rgba(255,255,255,0.05);">
+        <div
+            style="max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.2fr; gap: 5rem;">
+            <div>
+                <a href="#" class="hero-logo" style="margin-bottom: 1.5rem; color: white;">
+                    <i class="uil uil-medkit"></i> HMS Pro
+                </a>
+                <p style="color: rgba(255,255,255,0.4); line-height: 1.8; margin-bottom: 2rem; font-weight: 500;">
+                    Developing world-class healthcare infrastructure through digital integration
+                    and expert patient care workflows since 2018.
+                </p>
+                <div style="display: flex; gap: 1rem;">
+                    <a href="#" style="color: rgba(255,255,255,0.85); font-size: 1.5rem;"><i
+                            class="uil uil-facebook"></i></a>
+                    <a href="#" style="color: rgba(255,255,255,0.85); font-size: 1.5rem;"><i
+                            class="uil uil-twitter"></i></a>
+                    <a href="#" style="color: rgba(255,255,255,0.85); font-size: 1.5rem;"><i
+                            class="uil uil-instagram"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 style="font-weight: 800; margin-bottom: 2rem; color: #60A5FA;">Resources</h4>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <a href="#" style="color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600;">Find a
+                        Doctor</a>
+                    <a href="#" style="color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600;">Health
+                        Packages</a>
+                    <a href="#"
+                        style="color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600;">Institutions</a>
+                    <a href="#" style="color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600;">Contact
+                        Us</a>
+                </div>
+            </div>
+            <div>
+                <h4 style="font-weight: 800; margin-bottom: 2rem; color: #60A5FA;">Legal</h4>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <a href="#" style="color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600;">Privacy
+                        Policy</a>
+                    <a href="#" style="color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600;">Terms of
+                        Use</a>
+                    <a href="#" style="color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600;">Patient
+                        Rights</a>
+                    <a href="#"
+                        style="color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600;">Security</a>
+                </div>
+            </div>
+            <div
+                style="background: rgba(255,255,255,0.03); padding: 2rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05);">
+                <h4 style="font-weight: 800; margin-bottom: 1rem; color: white;">24/7 Support</h4>
+                <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-bottom: 1.5rem; font-weight: 600;">
+                    Emergency assistance available at all times.</p>
+                <div style="color: var(--success); font-size: 1.4rem; font-weight: 800;">+91 1800-HMS-PRO</div>
+            </div>
+        </div>
+        <div
+            style="text-align: center; margin-top: 6rem; padding-top: 3rem; border-top: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); font-size: 0.85rem; font-weight: 700;">
+            &copy; 2026 HMS PRO HEALTHCARE SYSTEMS PVT LTD. ALL RIGHTS RESERVED.
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        // Hero Navigation Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('main-nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+
+</html>

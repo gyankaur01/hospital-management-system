@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS | Pharmacy API</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="uil uil-medkit"></i>
+                <h2>HMS Pro</h2>
+            </div>
+            <div class="sidebar-menu">
+                <a href="dashboard.html" class="menu-item">
+                    <i class="uil uil-estate"></i> Dashboard
+                </a>
+                <a href="patients.html" class="menu-item">
+                    <i class="uil uil-users-alt"></i> Patients
+                </a>
+                <a href="appointments.html" class="menu-item">
+                    <i class="uil uil-calendar-alt"></i> Appointments
+                </a>
+                <a href="pharmacy.html" class="menu-item active">
+                    <i class="uil uil-capsule"></i> Pharmacy
+                </a>
+                <a href="billing.html" class="menu-item">
+                    <i class="uil uil-invoice"></i> Billing
+                </a>
+            </div>
+            <div class="sidebar-footer">
+                <a href="#" id="logout-btn" class="menu-item text-danger">
+                    <i class="uil uil-signout"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="flex-between" style="gap: 1.5rem;">
+                    <button id="sidebar-toggle" class="btn-outline">
+                        <i class="uil uil-bars"></i>
+                    </button>
+                    <h1 class="page-title">Pharmacy Management</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-details" style="text-align: right;">
+                        <div id="current-user-name" class="fw-600" style="font-size: 0.95rem;">Loading...</div>
+                        <div class="fs-small text-secondary">Manage System</div>
+                    </div>
+                    <div class="user-avatar">
+                        <i class="uil uil-user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper animate-fade-in">
+                <div class="data-card">
+                    <div class="card-header">
+                        <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
+                            <h3>Medicine Inventory</h3>
+                            <div class="search-container">
+                                <i class="uil uil-search"></i>
+                                <input type="text" id="medicine-search" class="form-control" placeholder="Search medicines...">
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-outline" onclick="window.HMS.exportToCSV('medicines', 'Pharmacy_Inventory')">
+                                <i class="uil uil-file-export"></i> Export CSV
+                            </button>
+                            <button class="btn btn-primary" onclick="document.getElementById('medicine-id').value=''; document.getElementById('medicine-form').reset(); document.getElementById('medicine-modal-title').textContent='Add New Medicine'; HMS.openModal('medicine-modal')">
+                                <i class="uil uil-plus"></i> Add Medicine
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Medicine Name</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Expiry</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="medicines-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer flex-between mt-20">
+                        <p id="pagination-info" class="fs-small text-secondary">Showing 1-5 of 0</p>
+                        <div class="flex-gap-1" style="gap: 0.5rem;">
+                            <button class="btn btn-outline p-10 fs-small" id="prev-page">Prev</button>
+                            <button class="btn btn-outline p-10 fs-small" id="next-page">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Medicine Modal -->
+    <div class="modal-overlay" id="medicine-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="medicine-modal-title">Add New Medicine</h3>
+                <button class="close-btn" onclick="HMS.closeModal('medicine-modal')">&times;</button>
+            </div>
+            <form id="medicine-form">
+                <input type="hidden" id="medicine-id">
+                <div class="form-group">
+                    <label for="med-name">Medicine Name</label>
+                    <input type="text" id="med-name" class="form-control" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="med-quantity">In Stock</label>
+                        <input type="number" id="med-quantity" class="form-control" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="med-min-stock">Min Stock Alert</label>
+                        <input type="number" id="med-min-stock" class="form-control" required min="0" value="100">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="med-price">Price (₹)</label>
+                        <input type="number" id="med-price" class="form-control" required step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="med-expiry">Expiry Date</label>
+                        <input type="date" id="med-expiry" class="form-control" required>
+                    </div>
+                </div>
+                <div class="flex-gap-1 mt-20">
+                    <button type="button" class="btn btn-outline" onclick="HMS.closeModal('medicine-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Save Medicine</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.HMS) {
+                const renderMedList = (data) => {
+                    const tbody = document.getElementById('medicines-tbody');
+                    tbody.innerHTML = data.map(m => {
+                        const status = m.quantity <= m.minStock ? 'Low Stock' : 'In Stock';
+                        const badgeClass = status === 'Low Stock' ? 'warning' : 'success';
+                        return `
+                        <tr>
+                            <td><strong>#${m.id}</strong></td>
+                            <td>${m.name}</td>
+                            <td>${m.quantity}</td>
+                            <td>&#8377;${parseFloat(m.price).toFixed(2)}</td>
+                            <td><span class="badge ${badgeClass}">${status}</span></td>
+                            <td>${m.expiry}</td>
+                            <td>
+                                <button class="btn p-5 action-btn" data-action="edit" data-id="${m.id}"><i class="uil uil-edit"></i></button>
+                                <button class="btn p-5 text-danger action-btn" data-action="delete" data-id="${m.id}"><i class="uil uil-trash"></i></button>
+                            </td>
+                        </tr>`;
+                    }).join('') || '<tr><td colspan="7">No medicines in inventory.</td></tr>';
+                };
+
+                const medicines = HMS.getData('medicines');
+                HMS.initPagination(medicines, 'medicines-tbody', 'pagination-info', 'prev-page', 'next-page', renderMedList);
+                HMS.searchTable('medicine-search', 'medicines-tbody');
+
+                // Event delegation — works even after pagination re-renders
+                document.getElementById('medicines-tbody').addEventListener('click', (e) => {
+                    const btn = e.target.closest('.action-btn');
+                    if (!btn) return;
+                    const id = Number(btn.dataset.id);
+                    const action = btn.dataset.action;
+                    if (action === 'edit') HMS.editMedicine(id);
+                    if (action === 'delete') HMS.deleteMedicine(id);
+                });
+
+                document.getElementById('medicine-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const rawId = document.getElementById('medicine-id').value;
+                    const id = rawId ? Number(rawId) : null;
+                    const data = {
+                        name: document.getElementById('med-name').value,
+                        quantity: parseInt(document.getElementById('med-quantity').value),
+                        minStock: parseInt(document.getElementById('med-min-stock').value),
+                        price: parseFloat(document.getElementById('med-price').value),
+                        expiry: document.getElementById('med-expiry').value
+                    };
+                    HMS.saveMedicine(id, data);
+                    setTimeout(() => location.reload(), 800);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
