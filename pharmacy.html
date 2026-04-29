@@ -64,16 +64,16 @@
             <div class="content-wrapper animate-fade-in">
                 <div class="data-card">
                     <div class="card-header">
-                        <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
+                        <div class="flex-gap-1" style="flex: 1; min-width: 250px;">
                             <h3>Medicine Inventory</h3>
-                            <div class="search-container">
+                            <div class="search-container" style="max-width: 300px; width: 100%;">
                                 <i class="uil uil-search"></i>
                                 <input type="text" id="medicine-search" class="form-control" placeholder="Search medicines...">
                             </div>
                         </div>
-                        <div style="display: flex; gap: 0.5rem;">
+                        <div class="flex-gap-1 mobile-stack" style="gap: 0.5rem;">
                             <button class="btn btn-outline" onclick="window.HMS.exportToCSV('medicines', 'Pharmacy_Inventory')">
-                                <i class="uil uil-file-export"></i> Export CSV
+                                <i class="uil uil-file-export"></i> <span class="hidden-mobile">Export CSV</span>
                             </button>
                             <button class="btn btn-primary" onclick="document.getElementById('medicine-id').value=''; document.getElementById('medicine-form').reset(); document.getElementById('medicine-modal-title').textContent='Add New Medicine'; HMS.openModal('medicine-modal')">
                                 <i class="uil uil-plus"></i> Add Medicine

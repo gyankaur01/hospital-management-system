@@ -9,29 +9,7 @@
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-        @media (max-width: 900px) { .dash-grid { grid-template-columns: 1fr; } }
-        .stat-card { display: flex; align-items: center; gap: 1.2rem; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.4rem 1.6rem; transition: transform .2s, box-shadow .2s; }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.18); }
-        .stat-icon { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
-        .stat-icon.primary { background: linear-gradient(135deg,#6366f1,#818cf8); color:#fff; }
-        .stat-icon.success { background: linear-gradient(135deg,#10b981,#34d399); color:#fff; }
-        .stat-icon.warning { background: linear-gradient(135deg,#f59e0b,#fbbf24); color:#fff; }
-        .stat-icon.danger  { background: linear-gradient(135deg,#ef4444,#f87171); color:#fff; }
-        .stat-icon.info    { background: linear-gradient(135deg,#06b6d4,#38bdf8); color:#fff; }
-        .stat-icon.purple  { background: linear-gradient(135deg,#a855f7,#c084fc); color:#fff; }
-        .stat-details h3 { font-size: 1.9rem; font-weight: 800; margin: 0; line-height: 1; }
-        .stat-details p  { margin: 4px 0 0; font-size: 0.82rem; color: var(--text-secondary); font-weight: 500; }
-        .stat-badge { margin-left: auto; font-size: 0.75rem; padding: 3px 9px; border-radius: 50px; font-weight: 600; }
-        .stat-badge.up   { background: rgba(16,185,129,.15); color: #10b981; }
-        .stat-badge.down { background: rgba(239,68,68,.12); color: #ef4444; }
-        .stats-grid-6 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
-        @media (max-width: 1100px) { .stats-grid-6 { grid-template-columns: repeat(2,1fr); } }
-        @media (max-width: 700px)  { .stats-grid-6 { grid-template-columns: 1fr; } }
         .chart-canvas-wrap { position: relative; height: 260px; }
-        .activity-item { display: flex; align-items: center; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--border-color); }
-        .activity-item:last-child { border-bottom: none; }
-        .activity-dot { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -58,7 +36,7 @@
     <!-- Main Content -->
     <main class="main-content">
         <header class="topbar">
-            <div class="flex-between" style="gap:1.5rem;">
+            <div class="flex-gap-1">
                 <button id="sidebar-toggle" class="btn-outline"><i class="uil uil-bars"></i></button>
                 <h1 class="page-title">Admin Overview</h1>
             </div>
@@ -169,22 +147,22 @@
                 <!-- Quick Actions + Activity -->
                 <div class="data-card" style="margin-bottom:0;">
                     <div class="card-header"><h3>Quick Actions</h3></div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;padding:0.5rem 0 1.2rem;">
-                        <a href="patients.html" class="stat-card" style="text-decoration:none;flex-direction:column;align-items:flex-start;gap:0.4rem;padding:1rem 1.2rem;">
-                            <div class="stat-icon primary" style="width:40px;height:40px;font-size:1.1rem;border-radius:10px;"><i class="uil uil-user-plus"></i></div>
-                            <span style="font-size:0.82rem;font-weight:600;">Add Patient</span>
+                    <div class="quick-actions-grid">
+                        <a href="patients.html" class="action-card primary">
+                            <div class="stat-icon primary"><i class="uil uil-user-plus"></i></div>
+                            <span>Add Patient</span>
                         </a>
-                        <a href="appointments.html" class="stat-card" style="text-decoration:none;flex-direction:column;align-items:flex-start;gap:0.4rem;padding:1rem 1.2rem;">
-                            <div class="stat-icon success" style="width:40px;height:40px;font-size:1.1rem;border-radius:10px;"><i class="uil uil-calendar-alt"></i></div>
-                            <span style="font-size:0.82rem;font-weight:600;">Schedule Appt</span>
+                        <a href="appointments.html" class="action-card success">
+                            <div class="stat-icon success"><i class="uil uil-calendar-alt"></i></div>
+                            <span>Schedule Appt</span>
                         </a>
-                        <a href="billing.html" class="stat-card" style="text-decoration:none;flex-direction:column;align-items:flex-start;gap:0.4rem;padding:1rem 1.2rem;">
-                            <div class="stat-icon warning" style="width:40px;height:40px;font-size:1.1rem;border-radius:10px;"><i class="uil uil-invoice"></i></div>
-                            <span style="font-size:0.82rem;font-weight:600;">Generate Bill</span>
+                        <a href="billing.html" class="action-card warning">
+                            <div class="stat-icon warning"><i class="uil uil-invoice"></i></div>
+                            <span>Generate Bill</span>
                         </a>
-                        <a href="pharmacy.html" class="stat-card" style="text-decoration:none;flex-direction:column;align-items:flex-start;gap:0.4rem;padding:1rem 1.2rem;">
-                            <div class="stat-icon danger" style="width:40px;height:40px;font-size:1.1rem;border-radius:10px;"><i class="uil uil-capsule"></i></div>
-                            <span style="font-size:0.82rem;font-weight:600;">Add Medicine</span>
+                        <a href="pharmacy.html" class="action-card danger">
+                            <div class="stat-icon danger"><i class="uil uil-capsule"></i></div>
+                            <span>Add Medicine</span>
                         </a>
                     </div>
 
